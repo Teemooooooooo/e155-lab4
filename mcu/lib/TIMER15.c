@@ -1,49 +1,44 @@
 // duration
 #include <TIMER15.h>
+#include <TIMER16.h>
 
-void configureTIM15() {
-    // Set clock to 80 MHz
-    // Output freq = (src_clk) * (N/M) / R
-    // (4 MHz) * (N/M) / R = 80 MHz
-    // M: XX, N: XX, R: XX
-    // Use MSI as PLLSRC
 
-    // Turn off PLL
-    RCC->RC &= ~(1<<24);
-    // Wait till PLL is unlocked (e.g., off)
-    while ((RCC->RC >> 25) & 0b1);
+void setupTIM15(uint32_t psc_val) {
+    // clear ARR
+    TIM15->ARR = 0b0;
 
-    // Load configuration
-    // TODO: Set PLL SRC to MSI
-    RCC->PLLCFGR |= 1;
-    RCC->PLLCFGR &= ~(1<<1); 
+    // set PSC
+    TIM15->PSC = psc_val; 
 
-    // TODO: Set PLLN -> 1010000
-    RCC->PLLCFGR &= ~(0b11111111 << 8); // clear PLLN bits
-    RCC->PLLCFGR |= (0b1010000 << 8);  // set it to 80
+    // Clear then set UG bit 
+    TIM15->EGR &= ~(1<<0);
+    TIM15->EGR |= (1<<0);
 
-    // TODO: Set PLLM -> 000
-    RCC->PLLCFGR &= ~(0b111 << 4);
+    // Clear SR.UFI
+    TIM15->SR &= ~(1<<0);
 
-    // TODO: Set PLLR -> 01
-    RCC->PLLCFGR &= ~(1 << 26);
-    RCC->PLLCFGR |= (1 << 25);
+    // enable the counter within the timers
+    TIM15->CR1 |= 0b1;
     
-    // TODO: Enable PLLR output
-    RCC->PLLCFGR |= (1 << 24);
-
-    // TODO: Enable PLL
-    RCC->CR |= (1 << 24);
-    
-    // TODO: Wait until PLL is locked
-    while ((RCC->CR >> 25 & 1) != 1);
 }
 
-void configureClock(){
-    // Configure and turn on PLL
-    configurePLL();
+void playDuration(uint32_t note_freq, uint32_t duration, int pin) {
+    // Repeat until SR.UIF is 1
+    while(~((TIM15->SR) & 1)){
+        // clear ARR
+        TIM15->ARR = 0b0;
 
-    // Select PLL as clock source
-    RCC->CFGR |= (0b11 << 0);
-    while(!((RCC->CFGR >> 2) & 0b11));
+        // set ARR
+        //duration / (prescalar + 1) * clk_freq
+        // duration is in mili sec cancel with 3 zeros on the clk_freq
+        TIM15->ARR = (duration *80000/ 80);
+        // Reset using EGR.UG
+        TIM15->EGR |= (1<<0);
+
+        playPitch(note_freq, pin);
+
+    }
+
+    // Clear SR.UFI
+    TIM15->SR &= ~(1<<0);
 }

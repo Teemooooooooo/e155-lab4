@@ -1,5 +1,6 @@
 
-
+#ifndef STM32L4_TIM16_H
+#define STM32L4_TIM16_H
 #define __IO volatile
 
 
@@ -37,3 +38,9 @@ typedef struct
 } TIMER16_TypeDef;
 
 #define TIMER16 ((TIMER16_TypeDef *) TIMER16_BASE)
+
+void setupTIM16(uint32_t psc_val);
+
+void playPitch(uint32_t arr_val);
+
+#endif

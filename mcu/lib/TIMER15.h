@@ -1,5 +1,8 @@
 
 
+#ifndef STM32L4_TIM15_H
+#define STM32L4_TIM15_H
+
 #define __IO volatile
 
 
@@ -37,3 +40,10 @@ typedef struct
 } TIMER15_TypeDef;
 
 #define TIMER15 ((TIMER15_TypeDef *) TIMER15_BASE)
+
+
+int digitalRead(int pin);
+
+void digitalWrite(int pin, int val);
+
+#endif
