@@ -37,10 +37,10 @@ typedef struct
   __IO uint32_t OR2;         /*!< TIM16 option register 2,                         Address offset: 0x60 */
 } TIMER16_TypeDef;
 
-#define TIMER16 ((TIMER16_TypeDef *) TIMER16_BASE)
+#define TIM16 ((TIMER16_TypeDef *) TIMER16_BASE)
 
 void setupTIM16(uint32_t psc_val);
 
-void playPitch(uint32_t arr_val);
+void playPitch(uint32_t arr_val, int pin);
 
 #endif

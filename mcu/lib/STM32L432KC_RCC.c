@@ -3,7 +3,7 @@
 
 #include "STM32L432KC_RCC.h"
 
-void configurePLL() {
+void configurePLL(void) {
     // Set clock to 80 MHz
     // Output freq = (src_clk) * (N/M) / R
     // (4 MHz) * (N/M) / R = 80 MHz
@@ -11,9 +11,9 @@ void configurePLL() {
     // Use MSI as PLLSRC
 
     // Turn off PLL
-    RCC->RC &= ~(1<<24);
+    RCC->CR &= ~(1<<24);
     // Wait till PLL is unlocked (e.g., off)
-    while ((RCC->RC >> 25) & 0b1);
+    while ((RCC->CR >> 25) & 0b1);
 
     // Load configuration
     // TODO: Set PLL SRC to MSI
@@ -41,7 +41,7 @@ void configurePLL() {
     while ((RCC->CR >> 25 & 1) != 1);
 }
 
-void configureClock(){
+void configureClock(void){
     // Configure and turn on PLL
     configurePLL();
 

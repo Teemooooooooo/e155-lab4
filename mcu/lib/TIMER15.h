@@ -34,16 +34,16 @@ typedef struct
   __IO uint32_t DMAR;        /*!< TIM15 DMA address for full transfer,             Address offset: 0x4C */
   __IO uint32_t OR1;         /*!< TIM15 option register 1,                         Address offset: 0x50 */
   uint32_t      RESERVED2;   /*!< Reserved,                                        Address offset: 0x54 */
-  uint32_t      RESERVED2;   /*!< Reserved,                                        Address offset: 0x58 */
-  uint32_t      RESERVED2;   /*!< Reserved,                                        Address offset: 0x5C */
+  uint32_t      RESERVED3;   /*!< Reserved,                                        Address offset: 0x58 */
+  uint32_t      RESERVED4;   /*!< Reserved,                                        Address offset: 0x5C */
   __IO uint32_t OR2;         /*!< TIM15 option register 2,                         Address offset: 0x60 */
 } TIMER15_TypeDef;
 
-#define TIMER15 ((TIMER15_TypeDef *) TIMER15_BASE)
+#define TIM15 ((TIMER15_TypeDef *) TIMER15_BASE)
 
 
-int digitalRead(int pin);
+void setupTIM15(uint32_t psc_val);
 
-void digitalWrite(int pin, int val);
+void playDuration(int note_freq, int duration, int pin);
 
 #endif

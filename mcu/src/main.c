@@ -2,9 +2,11 @@
 // main c file
 
 // Includes for libraries
-#include "../lib/STM32L432KC_FLASH.h"
-#include "../lib/STM32L432KC_RCC.h"
-#include "../lib/STM32L432KC_GPIO.h"
+#include "STM32L432KC_FLASH.h"
+#include "STM32L432KC_RCC.h"
+#include "TIMER15.h"
+#include "TIMER16.h"
+#include "STM32L432KC_GPIO.h"
 
 // Define macros for constants
 
@@ -157,7 +159,7 @@ int main(void) {
     // note_freq would be notes[i][0]
     // duration would be notes[i][1]
     for(int i=0; i < num_notes; i++) {
-        playDuration(note[i], LED_PIN);
+        playDuration(notes[i], LED_PIN);
     }
     return 0;
 }
