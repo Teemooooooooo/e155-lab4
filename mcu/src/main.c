@@ -2,11 +2,11 @@
 // main c file
 
 // Includes for libraries
-#include "STM32L432KC_FLASH.h"
-#include "STM32L432KC_RCC.h"
-#include "TIMER15.h"
-#include "TIMER16.h"
-#include "STM32L432KC_GPIO.h"
+#include "C:\Users\ellyu\Documents\GitHub\e155-lab4\mcu\lib\STM32L432KC_FLASH.h"
+#include "C:\Users\ellyu\Documents\GitHub\e155-lab4\mcu\lib\STM32L432KC_RCC.h"
+#include "C:\Users\ellyu\Documents\GitHub\e155-lab4\mcu\lib\TIMER15.h"
+#include "C:\Users\ellyu\Documents\GitHub\e155-lab4\mcu\lib\TIMER16.h"
+#include "C:\Users\ellyu\Documents\GitHub\e155-lab4\mcu\lib\STM32L432KC_GPIO.h"
 
 // Define macros for constants
 
@@ -127,14 +127,6 @@ const int notes[][2] = {
 {  0,	0}};
 
 
-// Function for dummy delay by executing nops
-void ms_delay(int ms) {
-   while (ms-- > 0) {
-      volatile int x=1000;
-      while (x-- > 0)
-         __asm("nop");
-   }
-}
 
 int main(void) {
     configureFlash();
@@ -151,15 +143,34 @@ int main(void) {
     pinMode(LED_PIN, GPIO_OUTPUT);
     
     const int psc = 79;
-    setupTIM15(psc);
+    setupTIM15(7999);
     setupTIM16(psc);
     // setting up the loop
     int num_notes = sizeof(notes)/ sizeof(notes[0]);   
     // play note
     // note_freq would be notes[i][0]
     // duration would be notes[i][1]
+
+
     for(int i=0; i < num_notes; i++) {
-        playDuration(notes[i], LED_PIN);
+        playDuration(notes[i][0],notes[i][1], LED_PIN);
+        while(!((TIM15->SR) & 1)){
+          if (notes[i][0] != 0){          
+            playPitch(notes[i][0], 3);
+            // wait for SR.UIF to be 1
+            while(!((TIM16->SR) & 1));
+            // flip the output
+            togglePin(3); // know what the LED is later
+            // Clear SR.UFI
+            TIM16->SR &= ~(1<<0);
+          }else {
+            // OUTPUT = 0
+            digitalWrite(3, 0);
+        };
+  
+      }
+      // Clear SR.UFI
+        TIM15->SR &= ~(1<<0);
     }
     return 0;
 }
